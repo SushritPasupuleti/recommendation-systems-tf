@@ -8,6 +8,6 @@ pip install ---
 
 > Download the `Book Crossing` dataset from [here](http://www2.informatik.uni-freiburg.de/~cziegler/BX/)
 
-> Extract the folder into `datasets/`
+> Extract the folder into `data/`
 
 > Run the Scripts
