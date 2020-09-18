@@ -10,3 +10,14 @@ book = pd.read_csv('data/BX-Books.csv', sep=';', error_bad_lines=False, encoding
 book_rating = pd.merge(rating, book, on='ISBN')
 cols = ['Year-Of-Publication', 'Publisher', 'Book-Author', 'Image-URL-S', 'Image-URL-M', 'Image-URL-L']
 book_rating.drop(cols, axis=1, inplace=True)
+# %%
+rating_count = (book_rating.
+     groupby(by = ['Book-Title'])['Book-Rating'].
+     count().
+     reset_index().
+     rename(columns = {'Book-Rating': 'RatingCount_book'})
+     [['Book-Title', 'RatingCount_book']]
+    )
+# %%
+print(rating_count)
+#%%
