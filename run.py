@@ -151,3 +151,8 @@ with tf.Session() as session:
     top_ten_ranked = pred_data[~index_1.isin(index_2)]
     top_ten_ranked = top_ten_ranked.sort_values(['User-ID', 'Book-Rating'], ascending=[True, False])
     top_ten_ranked = top_ten_ranked.groupby('User-ID').head(10)
+# %%
+top_ten_ranked.loc[top_ten_ranked['User-ID'] == 278582]
+
+# %%
+book_rating.loc[book_rating['User-ID'] == 278582].sort_values(by=['Book-Rating'], ascending=False)
