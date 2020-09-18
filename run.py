@@ -56,3 +56,11 @@ scaler = MinMaxScaler()
 combined['Book-Rating'] = combined['Book-Rating'].values.astype(float)
 rating_scaled = pd.DataFrame(scaler.fit_transform(combined['Book-Rating'].values.reshape(-1,1)))
 combined['Book-Rating'] = rating_scaled
+# %%
+combined = combined.drop_duplicates(['User-ID', 'Book-Title'])
+user_book_matrix = combined.pivot(index='User-ID', columns='Book-Title', values='Book-Rating')
+user_book_matrix.fillna(0, inplace=True)
+users = user_book_matrix.index.tolist()
+books = user_book_matrix.columns.tolist()
+user_book_matrix = user_book_matrix.to_numpy()
+# %%
