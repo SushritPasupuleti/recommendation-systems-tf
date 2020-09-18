@@ -101,3 +101,9 @@ encoder_op = encoder(X)
 decoder_op = decoder(encoder_op)
 y_pred = decoder_op
 y_true = X
+# %%
+loss = tf.losses.mean_squared_error(y_true, y_pred)
+optimizer = tf.train.RMSPropOptimizer(0.03).minimize(loss)
+eval_x = tf.placeholder(tf.int32, )
+eval_y = tf.placeholder(tf.int32, )
+pre, pre_op = tf.metrics.precision(labels=eval_x, predictions=eval_y)
