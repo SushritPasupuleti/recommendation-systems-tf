@@ -152,7 +152,10 @@ with tf.Session() as session:
     top_ten_ranked = top_ten_ranked.sort_values(['User-ID', 'Book-Rating'], ascending=[True, False])
     top_ten_ranked = top_ten_ranked.groupby('User-ID').head(10)
 # %%
+#Change value to generate recommendations for a different user
 top_ten_ranked.loc[top_ten_ranked['User-ID'] == 278582]
 
 # %%
+#Change value to verify recommendations for a different user
 book_rating.loc[book_rating['User-ID'] == 278582].sort_values(by=['Book-Rating'], ascending=False)
+# %%
