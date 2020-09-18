@@ -107,3 +107,47 @@ optimizer = tf.train.RMSPropOptimizer(0.03).minimize(loss)
 eval_x = tf.placeholder(tf.int32, )
 eval_y = tf.placeholder(tf.int32, )
 pre, pre_op = tf.metrics.precision(labels=eval_x, predictions=eval_y)
+# %%
+init = tf.global_variables_initializer()
+local_init = tf.local_variables_initializer()
+pred_data = pd.DataFrame()
+# %%
+with tf.Session() as session:
+    epochs = 100
+    batch_size = 35
+
+    session.run(init)
+    session.run(local_init)
+
+    num_batches = int(user_book_matrix.shape[0] / batch_size)
+    user_book_matrix = np.array_split(user_book_matrix, num_batches)
+    
+    for i in range(epochs):
+
+        avg_cost = 0
+        for batch in user_book_matrix:
+            _, l = session.run([optimizer, loss], feed_dict={X: batch})
+            avg_cost += l
+
+        avg_cost /= num_batches
+
+        print("epoch: {} Loss: {}".format(i + 1, avg_cost))
+
+    user_book_matrix = np.concatenate(user_book_matrix, axis=0)
+
+    preds = session.run(decoder_op, feed_dict={X: user_book_matrix})
+
+    pred_data = pred_data.append(pd.DataFrame(preds))
+
+    pred_data = pred_data.stack().reset_index(name='Book-Rating')
+    pred_data.columns = ['User-ID', 'Book-Title', 'Book-Rating']
+    pred_data['User-ID'] = pred_data['User-ID'].map(lambda value: users[value])
+    pred_data['Book-Title'] = pred_data['Book-Title'].map(lambda value: books[value])
+    
+    keys = ['User-ID', 'Book-Title']
+    index_1 = pred_data.set_index(keys).index
+    index_2 = combined.set_index(keys).index
+
+    top_ten_ranked = pred_data[~index_1.isin(index_2)]
+    top_ten_ranked = top_ten_ranked.sort_values(['User-ID', 'Book-Rating'], ascending=[True, False])
+    top_ten_ranked = top_ten_ranked.groupby('User-ID').head(10)
