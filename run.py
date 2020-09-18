@@ -28,3 +28,31 @@ print(rating_count)
 
 # %%
 user_rating = pd.merge(rating_count, book_rating, left_on='Book-Title', right_on='Book-Title', how='left')
+
+# %%
+print(user_rating)
+# %%
+user_count = (user_rating.
+     groupby(by = ['User-ID'])['Book-Rating'].
+     count().
+     reset_index().
+     rename(columns = {'Book-Rating': 'RatingCount_user'})
+     [['User-ID', 'RatingCount_user']]
+    )
+# %%
+print(user_count)
+# %%
+threshold = 20
+user_count = user_count.query('RatingCount_user >= @threshold')
+#%%
+print(user_count)
+#%%
+combined = user_rating.merge(user_count, left_on = 'User-ID', right_on = 'User-ID', how = 'inner')
+# %%
+print('Number of unique books: ', combined['Book-Title'].nunique())
+print('Number of unique users: ', combined['User-ID'].nunique())
+# %%
+scaler = MinMaxScaler()
+combined['Book-Rating'] = combined['Book-Rating'].values.astype(float)
+rating_scaled = pd.DataFrame(scaler.fit_transform(combined['Book-Rating'].values.reshape(-1,1)))
+combined['Book-Rating'] = rating_scaled
