@@ -21,3 +21,10 @@ rating_count = (book_rating.
 # %%
 print(rating_count)
 #%%
+threshold = 25
+rating_count = rating_count.query('RatingCount_book >= @threshold')
+# %%
+print(rating_count)
+
+# %%
+user_rating = pd.merge(rating_count, book_rating, left_on='Book-Title', right_on='Book-Title', how='left')
