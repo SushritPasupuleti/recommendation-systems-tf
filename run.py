@@ -64,3 +64,25 @@ users = user_book_matrix.index.tolist()
 books = user_book_matrix.columns.tolist()
 user_book_matrix = user_book_matrix.to_numpy()
 # %%
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+# %%
+num_input = combined['Book-Title'].nunique()
+num_hidden_1 = 10
+num_hidden_2 = 5
+
+X = tf.placeholder(tf.float64, [None, num_input])
+
+weights = {
+    'encoder_h1': tf.Variable(tf.random_normal([num_input, num_hidden_1], dtype=tf.float64)),
+    'encoder_h2': tf.Variable(tf.random_normal([num_hidden_1, num_hidden_2], dtype=tf.float64)),
+    'decoder_h1': tf.Variable(tf.random_normal([num_hidden_2, num_hidden_1], dtype=tf.float64)),
+    'decoder_h2': tf.Variable(tf.random_normal([num_hidden_1, num_input], dtype=tf.float64)),
+}
+
+biases = {
+    'encoder_b1': tf.Variable(tf.random_normal([num_hidden_1], dtype=tf.float64)),
+    'encoder_b2': tf.Variable(tf.random_normal([num_hidden_2], dtype=tf.float64)),
+    'decoder_b1': tf.Variable(tf.random_normal([num_hidden_1], dtype=tf.float64)),
+    'decoder_b2': tf.Variable(tf.random_normal([num_input], dtype=tf.float64)),
+}
